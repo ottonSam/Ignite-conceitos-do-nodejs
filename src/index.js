@@ -70,11 +70,39 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { title, deadline } = request.body;
+  const id = request.params.id;
+
+  const todos = user.todos;
+
+  const todo = todos.find(todo => todo.id === id);
+
+  if (!todo) {
+    return response.status(400).json({ error: 'Todo not found!' });
+  }
+
+  todo.title = title;
+  todo.deadline = new Date(deadline);
+
+  response.status(200).send(todo);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const id = request.params.id;
+
+  const todos = user.todos;
+
+  const todo = todos.find(todo => todo.id === id);
+
+  if (!todo) {
+    return response.status(400).json({ error: 'Todo not found!' });
+  }
+
+  todo.done = true;
+
+  response.status(200).send(todo)
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
